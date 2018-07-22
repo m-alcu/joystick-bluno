@@ -13,10 +13,59 @@
     tools:context="com.malcubierre.joystick.bluno.MainActivity"
     tools:showIn="@layout/activity_main">
     <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_below="@+id/linearLayout1"
+        android:orientation="horizontal"
+        android:layout_weight="1" >
+
+        <Button
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:text="P1"
+            android:id="@+id/buttonP1"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:text="P2"
+            android:id="@+id/buttonP2"
+            android:layout_weight="1"/>
+
+        <Button
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:text="P3"
+            android:id="@+id/buttonP3"
+            android:layout_weight="1"/>
+
+        <Button
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:text="P4"
+            android:id="@+id/buttonP4"
+            android:layout_weight="1"/>
+
+        <Button
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:text="P5"
+            android:id="@+id/buttonP5"
+            android:layout_weight="1"/>
+
+        <Button
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:text="P6"
+            android:id="@+id/buttonP6"
+            android:layout_weight="1"/>
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/linearLayout1"
         android:layout_margin="30dp"
         android:orientation="vertical" >
         <TextView
@@ -31,20 +80,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Y"
-            android:textColor="#444444"
-            android:textSize="20dp" />
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Angle"
-            android:textColor="#444444"
-            android:textSize="20dp" />
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Distance"
             android:textColor="#444444"
             android:textSize="20dp" />
         <TextView

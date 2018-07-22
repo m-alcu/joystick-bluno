@@ -1,6 +1,11 @@
 package com.malcubierre.joystick.bluno;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -11,17 +16,20 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import android.util.Log;
 
 public class MainActivity extends BlunoActivity {
 
     RelativeLayout layout_joystick;
-    TextView textView1, textView2, textView3, textView4, textView5;
+    TextView textView1, textView2, textView5;
+    Button buttonP1, buttonP2, buttonP3, buttonP4, buttonP5, buttonP6;
     Toolbar toolbar;
 
     Joystick js;
@@ -31,6 +39,10 @@ public class MainActivity extends BlunoActivity {
 
     private int mInterval = 500; // 0.5 seconds by default, can be changed later
     private Handler mHandler;
+
+    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
+
+    private final static String TAG = MainActivity.class.getSimpleName();
 
     Runnable mStatusChecker = new Runnable() {
         @Override
@@ -44,6 +56,9 @@ public class MainActivity extends BlunoActivity {
                         if (!Arrays.equals(message, lastMessage)) {
                             serialSend(message);
                             lastMessage = message;
+                            for(int i = 0; i < keys.length; i++) {
+                                keys[i] = false;
+                            }
                         }
                     } finally {
                         mHandler.postDelayed(mStatusChecker, mInterval);
@@ -129,9 +144,56 @@ public class MainActivity extends BlunoActivity {
 
         textView1 = (TextView)findViewById(R.id.textView1);
         textView2 = (TextView)findViewById(R.id.textView2);
-        textView3 = (TextView)findViewById(R.id.textView3);
-        textView4 = (TextView)findViewById(R.id.textView4);
         textView5 = (TextView)findViewById(R.id.textView5);
+
+        buttonP1 = (Button) findViewById(R.id.buttonP1);
+        buttonP1.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                keys[0] = true;
+            }
+        });
+        buttonP2 = (Button) findViewById(R.id.buttonP2);
+        buttonP2.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                keys[1] = true;
+            }
+        });
+        buttonP3 = (Button) findViewById(R.id.buttonP3);
+        buttonP3.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                keys[2] = true;
+            }
+        });
+        buttonP4 = (Button) findViewById(R.id.buttonP4);
+        buttonP4.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                keys[3] = true;
+            }
+        });
+        buttonP5 = (Button) findViewById(R.id.buttonP5);
+        buttonP5.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                keys[4] = true;
+            }
+        });
+        buttonP6 = (Button) findViewById(R.id.buttonP6);
+        buttonP6.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                keys[5] = true;
+            }
+        });
 
         layout_joystick = (RelativeLayout)findViewById(R.id.layout_joystick);
 
@@ -152,8 +214,6 @@ public class MainActivity extends BlunoActivity {
                     int[] position = js.getPosition();
                     textView1.setText("X : " + String.valueOf(position[0]));
                     textView2.setText("Y : " + String.valueOf(position[1]));
-                    textView3.setText("Angle : " + String.valueOf(js.getAngle()));
-                    textView4.setText("Distance : " + String.valueOf(js.getDistance()));
 
                     int direction = js.get8Direction();
                     if(direction == Joystick.STICK_UP) {
@@ -178,8 +238,6 @@ public class MainActivity extends BlunoActivity {
                 } else if(arg1.getAction() == MotionEvent.ACTION_UP) {
                     textView1.setText("X :");
                     textView2.setText("Y :");
-                    textView3.setText("Angle :");
-                    textView4.setText("Distance :");
                     textView5.setText("Direction :");
                 }
                 return true;
@@ -196,6 +254,48 @@ public class MainActivity extends BlunoActivity {
                 buttonScanOnClickProcess();
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("This app needs location access");
+                builder.setMessage("Please grant location access so this app can detect beacons.");
+                builder.setPositiveButton(android.R.string.ok, null);
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
+                    }
+                });
+                builder.show();
+            }
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_COARSE_LOCATION: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "coarse location permission granted");
+
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Functionality limited");
+                    builder.setMessage("Since location access has not been granted, this app will not be able to discover beacons when in the background.");
+                    builder.setPositiveButton(android.R.string.ok, null);
+                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+
+                        }
+                    });
+                    builder.show();
+                }
+                return;
+            }
+        }
     }
 
     @Override
